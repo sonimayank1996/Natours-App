@@ -1,5 +1,4 @@
 const Tour = require("../models/tourModel");
-console.log('test');
 // middleware
 // exports.checkId = (req, res, next, val) => {
 //   if (val * 1 > tours.length) {
@@ -25,8 +24,35 @@ console.log('test');
 
 // ROUTE HANDLER
 exports.getAllTours = async (req, res) => {
+  // BUILD THE QUERY
+  // FILTERING
+  const queryObj = {...req.query};
+  const excludeFields = ['page', 'sort', 'limit', 'fields'];
+  excludeFields.forEach((ele) => delete queryObj[ele]);
+
   try {
-    const tours = await Tour.find();
+    // const tours = await Tour.find({
+    //   duration: 5,
+    //   difficulty: 'easy'
+    // });
+
+    // ADVANCED FILTERING
+    // { difficulty: 'easy', duration: { $gte: 5}} 
+
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
+
+    const query = Tour.find(JSON.parse(queryStr));
+
+    // EXECUTE THE QUERY
+    const tours = await query;
+
+    // const tours = await Tour.find()  // this return a query
+    //   .where("duration")
+    //   .equals(5)
+    //   .where("difficulty")
+    //   .equals("easy");
+
     res.status(200).json({
       status: "success",
       results: tours.length,
