@@ -1,5 +1,5 @@
 const Tour = require("../models/tourModel");
-
+console.log('test');
 // middleware
 // exports.checkId = (req, res, next, val) => {
 //   if (val * 1 > tours.length) {
