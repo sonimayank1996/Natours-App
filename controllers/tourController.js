@@ -41,7 +41,6 @@ exports.getAllTours = async (req, res) => {
 
     let queryStr = JSON.stringify(queryObj);
     queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`);
-
     let query = Tour.find(JSON.parse(queryStr));
 
     // Sorting
@@ -56,6 +55,14 @@ exports.getAllTours = async (req, res) => {
 
     }
 
+    // FIELD LIMITING
+    if(req.query.fields) {
+       const fields = req.query.fields.split(',').join(" ");
+        query = query.select(fields);
+    } else {
+        query = query.select('-__v');
+    }
+ 
     // EXECUTE THE QUERY
     const tours = await query;
 
