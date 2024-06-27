@@ -28,6 +28,14 @@ app.use((req, res, next) => {
 app.use("/api/v1/tours", tourRouter);
 app.use("/api/v1/users", userRouter);
 
+// handling Unhandle routes
+app.all('*', (req, res) => {
+  res.status(404).json({
+    status: 'failed',
+    message: `Can't find ${req.originalUrl}`
+  })
+})
+
 // ROUTE
 // app.get("/api/v1/tours", getAllTours);
 
